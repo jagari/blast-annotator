@@ -1,0 +1,7 @@
+tools/
+blastdb/
+build_win/
+blast_cache/
+__pycache__/
+*.xlsx
+*.xlsx.log
