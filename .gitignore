@@ -5,3 +5,4 @@ blast_cache/
 __pycache__/
 *.xlsx
 *.xlsx.log
+release/
