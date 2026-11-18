@@ -10,8 +10,8 @@
 
 | 파일 | 설명 |
 |---|---|
-| `BLAST_Analyzer_Setup.exe` | **추천.** 설치 파일입니다. 더블클릭 → 다음 → 설치 |
-| `BLAST_Analyzer_portable.zip` | 설치 없이 쓰는 버전입니다. 압축을 풀고 `BLAST_Analyzer.exe` 실행 |
+| [**BLAST_Analyzer_Setup.exe** (92MB)](https://github.com/jagari/blast-annotator/releases/latest/download/BLAST_Analyzer_Setup.exe) | **추천.** 클릭하면 바로 다운로드됩니다. 더블클릭 → 다음 → 설치 |
+| [**BLAST_Analyzer_portable.zip** (124MB)](https://github.com/jagari/blast-annotator/releases/latest/download/BLAST_Analyzer_portable.zip) | 설치 없이 쓰는 버전입니다. 압축을 풀고 `BLAST_Analyzer.exe` 실행 |
 
 - Windows 10/11 (64비트)
 - 따로 설치할 것이 없습니다. 검색 프로그램과 데이터베이스가 모두 들어 있습니다.
