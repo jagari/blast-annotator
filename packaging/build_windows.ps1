@@ -88,7 +88,8 @@ $iscc = @("${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe", "$env:ProgramFiles\I
 if (-not $iscc) {
     Write-Host "Inno Setup 이 없어 설치 파일은 건너뜁니다 (choco install innosetup 으로 설치 가능)" -ForegroundColor Yellow
 } else {
-    & $iscc "/DSourceDir=$Dist" "/DOutDir=$Work" (Join-Path $Root "packaging\installer.iss")
+    $ver = if ($env:VERSION) { $env:VERSION.TrimStart("v") } else { "1.0" }
+    & $iscc "/DSourceDir=$Dist" "/DOutDir=$Work" "/DAppVersion=$ver" (Join-Path $Root "packaging\installer.iss")
     if ($LASTEXITCODE -ne 0) { throw "설치 파일 생성 실패" }
 }
 

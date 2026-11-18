@@ -18,6 +18,8 @@ from tkinter import filedialog, messagebox, ttk
 import blast_annotate as engine
 
 APP_TITLE = "서열 기능 자동 분석기"
+HINT = "#8a8a8a"     # 밝은/어두운 화면 모두에서 읽히는 회색
+ACCENT = "#2F80ED"   # 밝은/어두운 화면 모두에서 읽히는 파랑
 CONF_COLORS = {"높음": "#C6EFCE", "보통": "#FFEB9C", "낮음": "#FFC7CE", "결과 없음": "#E0E0E0"}
 
 
@@ -49,7 +51,7 @@ class App:
         self.out_dir = default_output_dir()
 
         root.title(APP_TITLE)
-        root.geometry("900x760")
+        root.geometry("940x820")
         root.minsize(760, 620)
         self._setup_fonts()
         self._build()
@@ -70,6 +72,7 @@ class App:
         self.mono = tkfont.Font(family=mono, size=9 if os.name == "nt" else 12)
         style = ttk.Style()
         style.configure("Start.TButton", font=self.bold, padding=(18, 8))
+        style.configure("TLabelframe.Label", font=self.bold)
         style.configure("Treeview", rowheight=24 if os.name == "nt" else 26)
 
     def _build(self):
@@ -78,7 +81,7 @@ class App:
         top.pack(fill="x", pady=(12, 4), **pad)
         ttk.Label(top, text=APP_TITLE, font=self.big).pack(side="left")
         ttk.Label(top, text="서열을 넣고 [분석 시작]을 누르면 기능을 찾아 엑셀로 정리합니다",
-                  foreground="#555").pack(side="left", padx=12, pady=(6, 0))
+                  foreground=HINT).pack(side="left", padx=12, pady=(6, 0))
 
         # 1. 서열 입력
         box1 = ttk.LabelFrame(self.root, text=" ① 서열 입력 ")
@@ -91,10 +94,10 @@ class App:
         self.count_lbl = ttk.Label(bar, text="", font=self.bold)
         self.count_lbl.pack(side="right")
         ttk.Label(box1, text="아래 칸에 서열을 붙여넣으세요. 여러 개는 FASTA 형식(>이름 다음 줄에 서열) "
-                             "또는 한 줄에 하나씩.", foreground="#555").pack(anchor="w", padx=8)
+                             "또는 한 줄에 하나씩.", foreground=HINT).pack(anchor="w", padx=8)
         tf = ttk.Frame(box1)
         tf.pack(fill="both", expand=True, padx=8, pady=(2, 8))
-        self.input = tk.Text(tf, height=9, wrap="char", font=self.mono, undo=True)
+        self.input = tk.Text(tf, height=6, wrap="char", font=self.mono, undo=True)
         sb = ttk.Scrollbar(tf, command=self.input.yview)
         self.input.configure(yscrollcommand=sb.set)
         self.input.pack(side="left", fill="both", expand=True)
@@ -112,7 +115,7 @@ class App:
                         text="정밀 검색 - NCBI 서버의 전체 DB에서 검색, 서열당 수 분~수십 분, 인터넷 필요"
                         ).pack(anchor="w", padx=8, pady=(0, 2))
         ttk.Label(box2, text="※ 빠른 검색에서 신뢰도 '낮음'/'결과 없음'이 나온 서열만 정밀 검색으로 다시 돌리는 것을 추천합니다.",
-                  foreground="#555").pack(anchor="w", padx=8, pady=(0, 6))
+                  foreground=HINT).pack(anchor="w", padx=8, pady=(0, 6))
 
         # 3. 실행
         box3 = ttk.Frame(self.root)
@@ -135,7 +138,7 @@ class App:
         self.open_xlsx_btn.pack(side="left")
         ttk.Button(rb, text="📁 결과 폴더 열기", command=self.open_folder).pack(side="left", padx=6)
         ttk.Button(rb, text="저장 위치 변경", command=self.change_dir).pack(side="left")
-        self.dir_lbl = ttk.Label(rb, text="", foreground="#555")
+        self.dir_lbl = ttk.Label(rb, text="", foreground=HINT)
         self.dir_lbl.pack(side="left", padx=8)
         self._show_dir()
 
@@ -144,13 +147,13 @@ class App:
         # 결과 표
         tframe = ttk.Frame(nb)
         cols = ("name", "func", "org", "conf", "ident")
-        self.tree = ttk.Treeview(tframe, columns=cols, show="headings", height=8)
+        self.tree = ttk.Treeview(tframe, columns=cols, show="headings", height=6)
         for c, t, w in zip(cols, ("서열 이름", "추정 기능", "유래 생물", "신뢰도", "일치도(%)"),
-                           (150, 330, 200, 70, 80)):
+                           (140, 300, 190, 60, 80)):
             self.tree.heading(c, text=t)
             self.tree.column(c, width=w, anchor="center" if c in ("conf", "ident") else "w")
         for k, v in CONF_COLORS.items():
-            self.tree.tag_configure(k, background=v)
+            self.tree.tag_configure(k, background=v, foreground="#000000")  # 다크 모드에서도 글자 보이게
         tsb = ttk.Scrollbar(tframe, command=self.tree.yview)
         self.tree.configure(yscrollcommand=tsb.set)
         self.tree.pack(side="left", fill="both", expand=True)
@@ -175,11 +178,11 @@ class App:
     def _update_count(self):
         recs = engine.parse_sequences(self.input.get("1.0", "end"))
         if not recs:
-            self.count_lbl.configure(text="서열 0개", foreground="#999")
+            self.count_lbl.configure(text="서열 0개", foreground=HINT)
         else:
             nuc = sum(1 for _, s in recs if engine.seq_type(s) == "nucleotide")
             self.count_lbl.configure(text=f"서열 {len(recs)}개 인식 (염기 {nuc} · 단백질 {len(recs) - nuc})",
-                                     foreground="#1F4E78")
+                                     foreground=ACCENT)
 
     def open_file(self):
         paths = filedialog.askopenfilenames(

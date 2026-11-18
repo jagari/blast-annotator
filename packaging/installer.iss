@@ -2,13 +2,16 @@
 #ifndef SourceDir
   #define SourceDir "..\build_win\dist\BLAST_Analyzer"
 #endif
+#ifndef AppVersion
+  #define AppVersion "1.0"
+#endif
 #ifndef OutDir
   #define OutDir "..\build_win"
 #endif
 
 [Setup]
 AppName=서열 기능 자동 분석기
-AppVersion=1.0
+AppVersion={#AppVersion}
 AppPublisher=BLAST Analyzer
 DefaultDirName={autopf}\BLAST_Analyzer
 DefaultGroupName=서열 기능 자동 분석기

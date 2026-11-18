@@ -6,3 +6,5 @@ __pycache__/
 *.xlsx
 *.xlsx.log
 release/
+build_mac/
+.DS_Store

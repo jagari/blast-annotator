@@ -1,0 +1,72 @@
+name: Build apps
+
+on:
+  workflow_dispatch:      # GitHub 웹에서 'Run workflow' 버튼으로 실행 (빌드만)
+  push:
+    tags: ["v*"]          # v1.1 같은 태그를 push 하면 빌드 + 릴리즈 자동 생성
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    env:
+      VERSION: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || 'v0.0-dev' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) { choco install innosetup -y --no-progress }
+      - name: Build
+        shell: pwsh
+        run: ./packaging/build_windows.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: |
+            build_win/BLAST_Analyzer_Setup.exe
+            build_win/BLAST_Analyzer_portable.zip
+          retention-days: 30
+
+  mac:
+    runs-on: macos-14     # Apple Silicon
+    timeout-minutes: 60
+    env:
+      VERSION: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || 'v0.0-dev' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build
+        run: PYTHON="$(which python)" bash packaging/build_mac.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mac
+          path: build_mac/BLAST_Analyzer_Mac_*.dmg
+          retention-days: 30
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [windows, mac]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -la dist
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "서열 기능 자동 분석기 $GITHUB_REF_NAME" \
+            --notes-file packaging/release_notes.md

@@ -1,22 +1,31 @@
 # 서열 기능 자동 분석기 (BLAST Analyzer)
 
 기능을 모르는 **염기서열(DNA)이나 단백질 서열**을 넣으면, BLAST로 비슷한 서열을 찾아
-**어떤 기능의 유전자/단백질인지 자동으로 정리해 엑셀 파일로** 만들어 주는 Windows 프로그램입니다.
+**어떤 기능의 유전자/단백질인지 자동으로 정리해 엑셀 파일로** 만들어 주는 프로그램입니다. **Windows와 Mac**에서 쓸 수 있습니다.
 서열을 하나씩 BLAST 웹사이트에 붙여넣던 반복 작업을 없애 줍니다.
 
 ## ⬇️ 다운로드
 
 ### [👉 최신 버전 다운로드 (Releases)](https://github.com/jagari/blast-annotator/releases/latest)
 
+**🪟 Windows**
+
 | 파일 | 설명 |
 |---|---|
 | [**BLAST_Analyzer_Setup.exe** (92MB)](https://github.com/jagari/blast-annotator/releases/latest/download/BLAST_Analyzer_Setup.exe) | **추천.** 클릭하면 바로 다운로드됩니다. 더블클릭 → 다음 → 설치 |
 | [**BLAST_Analyzer_portable.zip** (124MB)](https://github.com/jagari/blast-annotator/releases/latest/download/BLAST_Analyzer_portable.zip) | 설치 없이 쓰는 버전입니다. 압축을 풀고 `BLAST_Analyzer.exe` 실행 |
 
-- Windows 10/11 (64비트)
+**🍎 Mac** (M1/M2/M3/M4 등 Apple 칩)
+
+| 파일 | 설명 |
+|---|---|
+| [**BLAST_Analyzer_Mac_AppleSilicon.dmg** (160MB)](https://github.com/jagari/blast-annotator/releases/latest/download/BLAST_Analyzer_Mac_AppleSilicon.dmg) | 열어서 앱 아이콘을 Applications 폴더로 끌어다 놓기 |
+
+- Windows 10/11 (64비트) · macOS 12 이상 (Apple 칩)
 - 따로 설치할 것이 없습니다. 검색 프로그램과 데이터베이스가 모두 들어 있습니다.
-- 처음 실행할 때 파란색 **"Windows의 PC 보호"** 창이 뜨면 **[추가 정보] → [실행]** 을 누르세요.
-  (코드 서명 인증서가 없는 프로그램이라 뜨는 안내입니다)
+- 인증서 서명이 없는 프로그램이라 **처음 한 번** 보안 경고가 뜹니다.
+  - **Windows**: 파란색 "Windows의 PC 보호" 창 → **[추가 정보] → [실행]**
+  - **Mac**: 경고 창에서 [완료] → **시스템 설정 → 개인정보 보호 및 보안 → [그래도 열기]** → 앱 다시 실행
 
 ## 사용 방법
 
@@ -34,7 +43,9 @@
 - `blast_annotate.py`: 검색/분석/엑셀 엔진 (명령줄에서도 사용 가능, [사용법.md](사용법.md) 참고)
 - `gui.py`: 프로그램 화면 (tkinter)
 - `packaging/build_windows.ps1`: Windows 실행 파일과 설치 파일 빌드
-- 새 버전 빌드: GitHub → Actions → **Build Windows app** → Run workflow
+- `packaging/build_mac.sh`: Mac 앱(.app)과 dmg 빌드
+- **새 버전 릴리즈**: `git tag v1.2 && git push origin v1.2` → GitHub Actions 가 Windows/Mac 빌드, 자체 테스트, 릴리즈 생성까지 자동으로 합니다
+- 빌드만 해보기: GitHub → Actions → **Build apps** → Run workflow
 
 ## 출처 및 라이선스
 
